@@ -1,31 +1,86 @@
-# AI Weather Reporter Automation System
+# ☁️ AI Weather Reporter 📧
 
-## Problem Solved
-I developed this n8n automation to enable users to effortlessly receive real-time, customized weather data without manually checking weather sources. It streamlines the process of accessing specific weather information for a requested location.
+A concise automation workflow built with n8n, Lovable Forms, WeatherAPI, and Supabase to provide users with personalized weather reports. This project showcases end-to-end data processing from form submission to email delivery.
 
-## Solution Overview
-This system utilizes n8n as its core automation engine. Users fill out a Lovable form specifying the location for weather updates. The n8n workflow then takes this input, integrates with a weather API (WeatherAPI.com) to fetch the data, processes it (including JavaScript-based validation), stores relevant information in a Supabase database, and finally delivers a comprehensive weather report directly to the user's email inbox via Gmail SMTP.
+## ✨ Features
 
-## Key Tools & Integrations Used
-* **n8n:** The primary workflow automation platform.
-* **Lovable forms:** Used for user input.
-* **WeatherAPI.com:** Provides real-time weather data via its API.
-* **Supabase:** Utilized for efficient database management.
-* **Gmail SMTP:** For reliable email delivery.
-* **Custom JavaScript:** Implemented within n8n nodes for data validation and custom logic.
-* **API Integrations:** For seamless connection with external services.
+* **Dynamic Data Capture:** Captures user details (Name, Email, City) via a custom Lovable Form.
+* **Basic Data Processing:** Uses custom JavaScript for email validation and data formatting.
+* **Real-time Weather Data:** Fetches current weather conditions and Air Quality Index (AQI) from WeatherAPI.com.
+* **Data Persistence:** Stores all user submissions and corresponding weather data in a Supabase database.
+* **Personalized Email Reports:** Sends automated, customized emails to users with their requested weather information.
 
-## Visuals & Demo
-### N8n Workflow Screenshot
-(Optional: Take a clear screenshot of your n8n workflow for this "AI Weather Reporter" project. Save the image as a `.png` file. **To add images when editing directly on GitHub, you will need to upload them separately after this step.** For now, you can leave this placeholder or remove it if you don't have images yet. If you want to add images later, you'd navigate to the `ai-weather-reporter` folder on GitHub, click "Add file" -> "Upload files", then create an `images` folder and upload your screenshots there. Then, you'd come back and edit this `README.md` to add the link like: `![N8n Workflow](ai-weather-reporter/images/ai-weather-reporter-workflow.png)`)
+## 🚀 Technologies Used
 
-### Live Demo
-(Highly Recommended: Record a short video (e.g., using Loom or YouTube) showing the automation in action – from filling the Lovable form to receiving the email. Upload it to YouTube or Loom and paste the public link here.)
-[Watch AI Weather Reporter Demo Here](https://www.your-loom-or-youtube-link.com/ai-weather-reporter-demo)
-(Replace `https://www.your-loom-or-youtube-link.com/ai-weather-reporter-demo` with your actual video link.)
+* **n8n:** Workflow automation platform
+* **Lovable Forms:** Front-end form creation ([https://lovable-form-json-craft.lovable.app/](https://lovable-form-json-craft.lovable.app/))
+* **WeatherAPI.com:** Weather data API
+* **Supabase:** Backend-as-a-Service (Database & API)
+* **SMTP:** For sending emails
+* **JavaScript:** For custom logic within n8n's Code node.
 
-## Impact & Results
-This automation significantly improved user convenience by providing effortless access to real-time weather data. It eliminated the need for manual checks, ensuring users receive accurate and timely information directly to their inbox, enhancing overall efficiency and user satisfaction.
+## ⚙️ How It Works
 
-## My Role
-I designed, developed, and deployed the entire end-to-end automation system, including form integration, API calls, data handling, and email delivery using n8n and associated services.
+1.  A user fills out and submits the [Lovable Form](https://lovable-form-json-craft.lovable.app/) (fields: `full_name`, `email`, `city`).
+2.  The form submission triggers an **n8n Webhook**.
+3.  An **n8n Code node** processes the incoming data, including a basic email validation check, and formats the data for downstream nodes.
+4.  An **n8n HTTP Request node** calls the WeatherAPI.com to get current weather data for the specified city.
+5.  The combined user and weather data is then stored in a **Supabase table** (`Weather`) via the n8n Supabase node.
+6.  Finally, an **n8n Email node** sends a personalized weather report to the user's email address using SMTP.
+
+## 🛠️ Setup and Installation
+
+### Prerequisites
+
+* An active **n8n** instance (self-hosted or cloud).
+* A **Lovable Forms** account.
+* A **WeatherAPI.com** API key.
+* A **Supabase** project and database.
+* **SMTP** server details or a Gmail/other email service connected to n8n for sending emails.
+
+### Steps
+
+1.  **Clone this Repository:**
+    ```bash
+    git clone [https://github.com/YourUsername/ai-weather-reporter.git](https://github.com/YourUsername/ai-weather-reporter.git)
+    cd ai-weather-reporter
+    ```
+2.  **Import n8n Workflow:**
+    * Open your n8n instance.
+    * Go to 'Workflows' and click 'New'.
+    * Click the 'Import from JSON' button.
+    * Upload the `ai_weather_reporter_workflow.json` file from this repository.
+    * **Important:** After importing, navigate to the **HTTP Request node**. In its `URL` parameter, **replace `YOUR_WEATHERAPI_KEY_HERE` with your actual WeatherAPI.com API key.** Also, configure your Supabase and SMTP credentials within n8n.
+3.  **Configure Lovable Form:**
+    * Go to your Lovable Form ([https://lovable-form-json-craft.lovable.app/](https://lovable-form-json-craft.lovable.app/)).
+    * In the form settings, configure a webhook to point to the **"Production URL" of your n8n Webhook node**.
+    * Ensure your form fields are named `full_name`, `email`, and `city`.
+4.  **Setup Supabase Database:**
+    * In your Supabase project, create a table named `Weather`.
+    * Define the following columns with precise data types:
+        * `fullName`: `text`
+        * `email`: `text`
+        * `city`: `text`
+        * `email valid`: `boolean`
+        * `temperature`: `numeric`
+        * `condition`: `text`
+        * `aqi`: `numeric`
+        * `Timestamp`: `timestamptz`
+5.  **Activate Workflow:**
+    * In n8n, activate the workflow by toggling the "Active" switch in the top right corner.
+
+## 🖼️ Screenshots / Demos
+
+*(Here, you would embed screenshots or GIFs)*
+* Screenshot of the Lovable Form.
+* Screenshot of the complete n8n workflow.
+* Screenshot of data in your Supabase `Weather` table.
+* Screenshot of an example received email.
+
+## ✍️ Author
+
+* **Muneeb Ali Khan** - [Your GitHub Profile Link] - [Your LinkedIn Profile Link]
+
+## 📜 License
+
+This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details.
