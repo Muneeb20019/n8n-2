@@ -42,7 +42,8 @@ A concise automation workflow built with n8n, Lovable Forms, WeatherAPI, and Sup
 
 1.  **Clone this Repository:**
     ```bash
-    git clone https://github.com/Muneeb20019/n8n-2.git    cd ai-weather-reporter
+    git clone [https://github.com/Muneeb20019/n8n-2.git](https://github.com/Muneeb20019/n8n-2.git)
+    cd n8n-2
     ```
 2.  **Import n8n Workflow:**
     * Open your n8n instance.
@@ -52,8 +53,7 @@ A concise automation workflow built with n8n, Lovable Forms, WeatherAPI, and Sup
     * **Important:** After importing, navigate to the **HTTP Request node**. In its `URL` parameter, **replace `YOUR_WEATHERAPI_KEY_HERE` with your actual WeatherAPI.com API key.** Also, configure your Supabase and SMTP credentials within n8n.
 3.  **Configure Lovable Form:**
     * Go to your Lovable Form ([https://lovable-form-json-craft.lovable.app/](https://lovable-form-json-craft.lovable.app/)).
-    * In the form settings, configure a webhook to point to the **"Production URL" of your n8n Webhook node**.
-    * Ensure your form fields are named `full_name`, `email`, and `city`.
+    * In the form settings, configure a webhook to point to the **"Production URL" of your n8n Webhook node**. (You can find this URL in the Webhook node's settings in n8n, under 'Webhook URLs' and selecting 'Production URL').
 4.  **Setup Supabase Database:**
     * In your Supabase project, create a table named `Weather`.
     * Define the following columns with precise data types:
@@ -65,8 +65,8 @@ A concise automation workflow built with n8n, Lovable Forms, WeatherAPI, and Sup
         * `condition`: `text`
         * `aqi`: `numeric`
         * `Timestamp`: `timestamptz`
-5.  **Activate Workflow:**
-    * In n8n, activate the workflow by toggling the "Active" switch in the top right corner.
+5.  **Activate n8n Workflow:**
+    * In your n8n instance, activate the workflow by toggling the "Active" switch in the top right corner. Once active, it will be ready to process data sent to its Production Webhook URL.
 
 ## 🖼️ Screenshots / Demos
 
