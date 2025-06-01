@@ -1,0 +1,264 @@
+{
+  "name": "AI Weather Reporter",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "08638ead-b14f-4f14-ae9a-51a81087a915",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -500,
+        -100
+      ],
+      "id": "9e316ede-b8fe-46a9-b124-962191c4b4f8",
+      "name": "Webhook",
+      "webhookId": "08638ead-b14f-4f14-ae9a-51a81087a915"
+    },
+    {
+      "parameters": {
+        "jsCode": "const item = $input.item; // Get the single item from the previous node's output\n\n// Ensure item.json and item.json.body exist before proceeding\nif (!item || !item.json || !item.json.body) {\n    throw new Error(\"No valid JSON data (or body) received from previous node.\");\n}\n\n// Extract fields from the incoming form data, specifically from the 'body'\nconst formData = item.json.body;\n\n// Map the form fields to individual keys.\n// CORRECTED: Extract 'full_name' (lowercase f, underscore n) from formData\nconst fullName = formData.full_name || ''; // Changed from formData.fullName to formData.full_name\nconst email = formData.email || '';       \nconst city = formData.city || '';         \n\n// Basic email regex pattern for validation\nconst emailRegex = /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/;\nconst isValid = emailRegex.test(email);\n\n// Create a new JSON object with the parsed fields\n// This will be the output of your Code node\nitem.json = {\n    fullName: fullName,   // This property (what downstream nodes see) will still be 'fullName'\n    email: email,\n    city: city,\n    email_valid: isValid\n};\n\nreturn item; // Return the modified single item"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -280,
+        -100
+      ],
+      "id": "51a83c62-9dfa-4495-bfe6-883ec7e28112",
+      "name": "Code"
+    },
+    {
+      "parameters": {
+        "url": "=https://api.weatherapi.com/v1/current.json?key=YOUR_WEATHERAPI_KEY_HERE&q={{ $('Code').item.json.city }}&aqi=yes",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -80,
+        -100
+      ],
+      "id": "7ba4559c-8501-419f-b6fb-097a034c082e",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "tableId": "Weather",
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": "fullName",
+              "fieldValue": "={{ $('Code').item.json.fullName }}"
+            },
+            {
+              "fieldId": "email",
+              "fieldValue": "={{ $('Code').item.json.email }}"
+            },
+            {
+              "fieldId": "city",
+              "fieldValue": "={{ $('Code').item.json.city }}"
+            },
+            {
+              "fieldId": "email valid",
+              "fieldValue": "={{ $('Code').item.json.email_valid }}"
+            },
+            {
+              "fieldId": "temperature",
+              "fieldValue": "={{ $json.current.temp_c }}"
+            },
+            {
+              "fieldId": "condition",
+              "fieldValue": "={{ $('HTTP Request').item.json.current.condition.text }}"
+            },
+            {
+              "fieldId": "aqi",
+              "fieldValue": "={{ $('HTTP Request').item.json.current.air_quality.pm2_5 }}"
+            },
+            {
+              "fieldId": "Timestamp",
+              "fieldValue": "={{ $('Webhook').item.json.body.timestamp }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        120,
+        -100
+      ],
+      "id": "4218076e-44e8-4380-9bbc-7ff453486110",
+      "name": "Supabase",
+      "credentials": {
+        "supabaseApi": {
+          "id": "s2xVq8zFPbmV5ktA",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fromEmail": "muneebkhan20019@gmail.com",
+        "toEmail": "={{ $('Supabase').item.json.email }}",
+        "subject": "=Here's the Weather for {{ $('Supabase').item.json.city }}!",
+        "html": "=Hi {{ $('Supabase').item.json.fullName }},\n\nThanks for submitting your details.\n\nHere's the current weather for {{ $('Supabase').item.json.city }}:\n\n- Temperature: {{ $('HTTP Request').item.json.current.temp_c }}°C\n- Condition: {{ $('HTTP Request').item.json.current.condition.text }}\n- AQI: {{ $('HTTP Request').item.json.current.air_quality.pm2_5 }}\n\nStay safe and take care!\n\nThanks,\nMuneeb Ali Khan",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        320,
+        -100
+      ],
+      "id": "62f1b398-ea58-45d8-b7b8-ae4594c6f991",
+      "name": "Send Email",
+      "webhookId": "9b0b1f88-2da8-4e60-937e-1050d015192a",
+      "credentials": {
+        "smtp": {
+          "id": "k9JaQBMf2BiSQNGL",
+          "name": "SMTP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "Wehbhook Node:\n\nEntry point. Listen for POST data ( Full Name,Email and City) from lovable form to trigger form.\n",
+        "height": 340,
+        "width": 200
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -540,
+        -280
+      ],
+      "typeVersion": 1,
+      "id": "8de7e1ed-82b4-4261-a8ce-ff083ab58bdd",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "Code Node:\n\nValidates user email's via java script.Add's emailValide (true/false) to data for conditional routing.",
+        "height": 340,
+        "width": 200,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -340,
+        -280
+      ],
+      "typeVersion": 1,
+      "id": "a950ea9c-0c74-4527-90db-af03a53d7b8e",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "content": "HTTP Requesr Node:\n\nFetches currently data and AQI data from WeatherAPI.com using the submitted city and an API key.",
+        "height": 340,
+        "width": 220,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -140,
+        -280
+      ],
+      "typeVersion": 1,
+      "id": "73d9e455-b048-4a34-ab23-c7524d40c971",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "content": "Supabase Node:\n\nInsert user and fetched weather data (Temperatre,Condition,AQI) into the weather_reports table in supabase.",
+        "height": 340,
+        "width": 200,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        60,
+        -280
+      ],
+      "typeVersion": 1,
+      "id": "a53aa544-1b70-4451-87ff-6dc6a15313e3",
+      "name": "Sticky Note3"
+    },
+    {
+      "parameters": {
+        "content": "Send Email Node:\n\nSends a personalized weather summary email to the user using their submitted email address and fetched weather data.",
+        "height": 340,
+        "width": 200,
+        "color": 2
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        260,
+        -280
+      ],
+      "typeVersion": 1,
+      "id": "f21569dd-c5ef-4e9b-8252-65b908551797",
+      "name": "Sticky Note4"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Supabase",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Supabase": {
+      "main": [
+        [
+          {
+            "node": "Send Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "e8258cb0-1752-4b2a-8e7b-f13785f10a8b",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "eaa9a2673fc25961f5be0b649cce5420d2291106b434a24a34ea74bd23f129d4"
+  },
+  "id": "U5isS9FOj6x3Jkot",
+  "tags": []
+}
