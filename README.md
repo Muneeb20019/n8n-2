@@ -42,8 +42,7 @@ A concise automation workflow built with n8n, Lovable Forms, WeatherAPI, and Sup
 
 1.  **Clone this Repository:**
     ```bash
-    git clone [https://github.com/YourUsername/ai-weather-reporter.git](https://github.com/YourUsername/ai-weather-reporter.git)
-    cd ai-weather-reporter
+    git clone https://github.com/Muneeb20019/n8n-2.git    cd ai-weather-reporter
     ```
 2.  **Import n8n Workflow:**
     * Open your n8n instance.
