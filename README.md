@@ -68,14 +68,10 @@ A concise automation workflow built with n8n, Lovable Forms, WeatherAPI, and Sup
 5.  **Activate n8n Workflow:**
     * In your n8n instance, activate the workflow by toggling the "Active" switch in the top right corner. Once active, it will be ready to process data sent to its Production Webhook URL.
 
-## 🖼️ Visuals
+## 🖼️ Demo
 
-*(Here, you would embed screenshots or GIFs)*
-* Screenshot of the Lovable Form.
-* Screenshot of the complete n8n workflow.
-* Screenshot of data in your Supabase `Weather` table.
-* Screenshot of an example received email.
-
+* (https://www.loom.com/share/941af541355f459a8f19f6c3e4cda597?sid=1307c447-a23c-45d0-88b9-dba260b51072)
+  
 ## ✍️ Author
 
 * **Muneeb Ali Khan** - https://github.com/Muneeb20019  -   https://www.linkedin.com/in/muneeb-ali-khan-2a1675365
