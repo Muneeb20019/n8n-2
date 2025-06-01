@@ -78,7 +78,7 @@ A concise automation workflow built with n8n, Lovable Forms, WeatherAPI, and Sup
 
 ## ✍️ Author
 
-* **Muneeb Ali Khan** - [Your GitHub Profile Link] - [Your LinkedIn Profile Link]
+* **Muneeb Ali Khan** - (https://github.com/Muneeb20019)- [Your LinkedIn Profile Link]
 
 ## 📜 License
 
